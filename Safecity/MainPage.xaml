@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Safecity.MainPage">
+    <StackLayout>
+        <Image BackgroundColor="#000"
+               HeightRequest="150"
+               Source="@drawable/SafecityLogo" />
+        <Label HorizontalTextAlignment="center"
+               Padding="5"
+               FontSize="Title"
+               VerticalOptions="CenterAndExpand"
+               Text="Look before you Leap&#10;Use Safecity to track the risks before visiting, moving, or just passing through.&#10;Learn what you're up against so you can be prepared!" />
+        <StackLayout HorizontalOptions="Fill"
+                     BackgroundColor="#0095C2"
+                     HeightRequest="100"
+                     Orientation="Horizontal"
+                     VerticalOptions="EndAndExpand">
+            <Image BackgroundColor="Transparent"
+                   VerticalOptions="FillAndExpand"
+                   HorizontalOptions="CenterAndExpand"
+                   Source="@drawable/info" />
+            <ImageButton VerticalOptions="FillAndExpand"
+                         HorizontalOptions="CenterAndExpand"
+                         BackgroundColor="Transparent"
+                         Source="@drawable/Search"
+                         Clicked="GoToSearch" />
+        </StackLayout>
+    </StackLayout>
+</ContentPage>
