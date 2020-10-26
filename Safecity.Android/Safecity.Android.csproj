@@ -74,8 +74,6 @@
     <AndroidResource Include="Resources\drawable\info.png" />
     <AndroidResource Include="Resources\drawable\SafecityLogo.png" />
     <AndroidResource Include="Resources\drawable\Search.png" />
-    <AndroidResource Include="Resources\layout\Tabbar.xml" />
-    <AndroidResource Include="Resources\layout\Toolbar.xml" />
     <AndroidResource Include="Resources\values\styles.xml" />
     <AndroidResource Include="Resources\values\colors.xml" />
     <AndroidResource Include="Resources\mipmap-anydpi-v26\icon.xml" />
@@ -96,6 +94,9 @@
       <Project>{617F3631-CDD8-4A2F-AE5C-D055D362F94F}</Project>
       <Name>Safecity</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\layout\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <ProjectExtensions>

@@ -10,9 +10,9 @@ using Xamarin.Forms;
 
 namespace Safecity
 {
-    public partial class SearchPage : ContentPage
+    public partial class HelpPage : ContentPage
     {
-        public SearchPage()
+        public HelpPage()
         {
             InitializeComponent();
             NavigationPage.SetHasNavigationBar(this, false);
@@ -64,23 +64,6 @@ namespace Safecity
             {
                 return null;
             }
-        }
-
-        private void Submit_Clicked(object sender, EventArgs e)
-        {
-            int zip = 0;
-            try
-            {
-                zip = Int32.Parse(Zip.Text);
-            }
-            catch (Exception)
-            {
-                zip = 0;
-                ErrorMsg.IsVisible = true;
-            }
-            int age = Age.Text == null ? 0 : Int32.Parse(Age.Text);
-            String sexString = SexPicker.SelectedItem != null ? SexPicker.SelectedItem.ToString() : "";
-            String raceString = RacePicker.SelectedItem != null ? RacePicker.SelectedItem.ToString() : "";
         }
     }
 }

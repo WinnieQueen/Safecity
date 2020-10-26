@@ -2,11 +2,37 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Safecity.SearchPage">
-    <StackLayout>
-        <Label HorizontalTextAlignment="center"
-               FontSize="Title"
-               VerticalOptions="CenterAndExpand"
-               Text="Hi, I'm Paul" />
+    <Grid>
+        <StackLayout VerticalOptions="Center">
+            <Label>Zip</Label>
+            <Entry x:Name="Zip" />
+            <Label>Age</Label>
+            <Entry x:Name="Age"
+                   Keyboard="Numeric" />
+            <Label>Sex</Label>
+            <Picker x:Name="SexPicker"
+                    SelectedIndex="0">
+                <Picker.Items>
+                    <x:String>Male</x:String>
+                    <x:String>Female</x:String>
+                </Picker.Items>
+            </Picker>
+            <Label>Race</Label>
+            <Picker x:Name="RacePicker">
+                <Picker.Items>
+                    <x:String>Asian</x:String>
+                    <x:String>Native_Hawaiian</x:String>
+                    <x:String>Black</x:String>
+                    <x:String>American_Indian</x:String>
+                    <x:String>White</x:String>
+                </Picker.Items>
+            </Picker>
+            <Button Text="Submit"
+                    Clicked="Submit_Clicked" />
+        </StackLayout>
+
+        <Label x:Name="ErrorMsg" TextColor="Red" IsVisible="false">Please ensure the Zip code is valid.</Label>
+
         <StackLayout HorizontalOptions="Fill"
                      BackgroundColor="#0095C2"
                      HeightRequest="100"
@@ -16,11 +42,11 @@
                          VerticalOptions="FillAndExpand"
                          HorizontalOptions="CenterAndExpand"
                          Source="@drawable/info"
-                         Clicked="GoToResults" />
+                         Clicked="GoToInfo" />
             <Image VerticalOptions="FillAndExpand"
                    HorizontalOptions="CenterAndExpand"
                    BackgroundColor="Transparent"
                    Source="@drawable/Search" />
         </StackLayout>
-    </StackLayout>
+    </Grid>
 </ContentPage>

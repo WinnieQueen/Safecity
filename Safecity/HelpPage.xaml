@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Safecity.HelpPage">
+    <StackLayout>
+        <Label HorizontalTextAlignment="center"
+               FontSize="Title"
+               VerticalOptions="CenterAndExpand"
+               Text="Hi, I'm Paul" />
+        <StackLayout HorizontalOptions="Fill"
+                     BackgroundColor="#0095C2"
+                     HeightRequest="100"
+                     Orientation="Horizontal"
+                     VerticalOptions="EndAndExpand">
+            <ImageButton BackgroundColor="Transparent"
+                         VerticalOptions="FillAndExpand"
+                         HorizontalOptions="CenterAndExpand"
+                         Source="@drawable/info"
+                         Clicked="GoToResults" />
+            <Image VerticalOptions="FillAndExpand"
+                   HorizontalOptions="CenterAndExpand"
+                   BackgroundColor="Transparent"
+                   Source="@drawable/Search" />
+        </StackLayout>
+    </StackLayout>
+</ContentPage>

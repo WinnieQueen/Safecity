@@ -18,6 +18,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="HelpPage.xaml.cs">
+      <DependentUpon>HelpPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="ResultsPage.xaml.cs">
+      <DependentUpon>ResultsPage.xaml</DependentUpon>
+    </Compile>
     <Compile Update="SearchPage.xaml.cs">
       <DependentUpon>SearchPage.xaml</DependentUpon>
     </Compile>
