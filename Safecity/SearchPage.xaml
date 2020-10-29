@@ -38,7 +38,7 @@
 
         <StackLayout HorizontalOptions="Fill"
                      BackgroundColor="#0095C2"
-                     HeightRequest="100"
+                     HeightRequest="50"
                      Orientation="Horizontal"
                      VerticalOptions="End">
             <ImageButton BackgroundColor="Transparent"

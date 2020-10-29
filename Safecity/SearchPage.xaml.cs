@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using System.Net;
 using System.IO;
+using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace Safecity
 {
@@ -61,59 +63,65 @@ namespace Safecity
 
         private string[] GetInfo(int zip)
         {
-            //hardcoded for testing purposes as to not constantly call the API yet
-            string city = "Huntington";
-
             try
             {
-                //getting the state/city from API
-
-                //var client = new RestClient("https://redline-redline-zipcode.p.rapidapi.com/rest/info.json/{zip}/degrees");
-                //var request = new RestRequest(Method.GET);
+                //getting the state/city from APIs
+                string url = $"https://redline-redline-zipcode.p.rapidapi.com/rest/info.json/{zip}/degrees";
+                Console.WriteLine(url);
+                RestClient client = new RestClient(url);
+                //RestRequest request = new RestRequest(Method.GET);
+                //Console.WriteLine("so far so good");
                 //request.AddHeader("x-rapidapi-host", "redline-redline-zipcode.p.rapidapi.com");
                 //request.AddHeader("x-rapidapi-key", "ebacc40a32mshdcb364465409375p1f8018jsncc41302b2150");
+                //request.AddHeader("useQueryString", "true");
+
+                
 
                 //IRestResponse response = client.Execute(request);
                 //var jObject = JObject.Parse(response.Content);
                 //string city = jObject.GetValue("city").ToString();
+                //city = city.ToLower();
+                //string state = jObject.GetValue("state").ToString();
+                //state = state.ToLower();
 
                 //getting the county from database
-                using (StreamReader sr = new StreamReader("uszips.csv"))
-                {
-                    string currentLine;
-                    // currentLine will be null when the StreamReader reaches the end of file
-                    while ((currentLine = sr.ReadLine()) != null)
-                    {
-                        // Search, case insensitive, if the currentLine contains the searched keyword
-                        if (currentLine.IndexOf("I/RPTGEN", StringComparison.CurrentCultureIgnoreCase) >= 0)
-                        {
-                            Console.WriteLine(currentLine);
-                        }
-                    }
-                }
+                string allInfo = Safecity.Properties.Resources.uszips;
+                string pattern = "(\"${zip}\".*${state}.*{)";
+                Regex r = new Regex(pattern);
+                string infoString = r.Match(allInfo.ToLower()).Value;
+                string[] cityInfo = infoString.Split(',');
+                string county = cityInfo[cityInfo.Length - 2];
+                county = county.Replace("\"", "");
 
-                return new string[] { city };
+                //hardcoded for test
+                string state = "utah";
+                string city = "huntington";
+                return new string[] { state, county, city };
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Console.WriteLine(e.StackTrace);
                 return null;
             }
         }
 
         private Dictionary<string, string> GetData(int zip, int age, string sex, string race)
         {
-            string[] info = GetInfo(zip);
-            if (info != null)
+            Dictionary<string, string> data = null;
+            if (zip >= 00501 && zip <= 99950)
             {
-                string state = info[0];
-                string county = info[1];
-                string city = info[2];
-                return null;
+                string[] info = GetInfo(zip);
+                if (info != null)
+                {
+                    data = new Dictionary<string, string>();
+                    string state = info[0];
+                    string county = info[1];
+                    string city = info[2];
+                    Console.WriteLine("State: " + state + "County: " + county + "City: " + city);
+                    return null;
+                }
             }
-            else
-            {
-                return null;
-            }
+            return data;
         }
 
         private void Submit_Clicked(object sender, EventArgs e)

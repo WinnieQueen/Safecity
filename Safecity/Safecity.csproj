@@ -11,6 +11,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\uszips.csv" />
+    <None Remove="uszips.csv" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="RestSharp" Version="106.11.7" />
     <PackageReference Include="Xamarin.Forms" Version="4.6.0.1141" />
@@ -18,8 +23,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resources\uszips.csv" />
+    <Resource Include="uszips.csv" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Update="HelpPage.xaml.cs">
       <DependentUpon>HelpPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Update="ResultsPage.xaml.cs">
       <DependentUpon>ResultsPage.xaml</DependentUpon>
@@ -27,5 +42,12 @@
     <Compile Update="SearchPage.xaml.cs">
       <DependentUpon>SearchPage.xaml</DependentUpon>
     </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>
