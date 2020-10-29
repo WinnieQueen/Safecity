@@ -69,38 +69,35 @@ namespace Safecity
                 string url = $"https://redline-redline-zipcode.p.rapidapi.com/rest/info.json/{zip}/degrees";
                 Console.WriteLine(url);
                 RestClient client = new RestClient(url);
-                //RestRequest request = new RestRequest(Method.GET);
-                //Console.WriteLine("so far so good");
-                //request.AddHeader("x-rapidapi-host", "redline-redline-zipcode.p.rapidapi.com");
-                //request.AddHeader("x-rapidapi-key", "ebacc40a32mshdcb364465409375p1f8018jsncc41302b2150");
-                //request.AddHeader("useQueryString", "true");
+                RestRequest request = new RestRequest(Method.GET);
+                Console.WriteLine("so far so good");
+                request.AddHeader("x-rapidapi-host", "redline-redline-zipcode.p.rapidapi.com");
+                request.AddHeader("x-rapidapi-key", "ebacc40a32mshdcb364465409375p1f8018jsncc41302b2150");
+                request.AddHeader("useQueryString", "true");
 
-                
-
-                //IRestResponse response = client.Execute(request);
-                //var jObject = JObject.Parse(response.Content);
-                //string city = jObject.GetValue("city").ToString();
-                //city = city.ToLower();
-                //string state = jObject.GetValue("state").ToString();
-                //state = state.ToLower();
+              
+                IRestResponse response = client.Execute(request);
+                var jObject = JObject.Parse(response.Content);
+                string city = jObject.GetValue("city").ToString();
+                city = city.ToLower();
+                string state = jObject.GetValue("state").ToString();
+                state = state.ToLower();
 
                 //getting the county from database
                 string allInfo = Safecity.Properties.Resources.uszips;
-                string pattern = "(\"${zip}\".*${state}.*{)";
+                string pattern = $"(\"{zip}\".*{state}.*{{)";
                 Regex r = new Regex(pattern);
                 string infoString = r.Match(allInfo.ToLower()).Value;
+                Console.WriteLine(infoString);
                 string[] cityInfo = infoString.Split(',');
                 string county = cityInfo[cityInfo.Length - 2];
                 county = county.Replace("\"", "");
 
-                //hardcoded for test
-                string state = "utah";
-                string city = "huntington";
                 return new string[] { state, county, city };
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.StackTrace);
+                Console.WriteLine(e.Message);
                 return null;
             }
         }
