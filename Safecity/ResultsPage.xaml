@@ -2,12 +2,84 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Safecity.ResultsPage">
-    <StackLayout>
-        <Label HorizontalTextAlignment="center"
-               FontSize="Title"
-               VerticalOptions="CenterAndExpand"
-               Text="Hi, I'm Paul" />
+    <Grid>
+        <Grid Grid.Row="0"
+              HorizontalOptions="CenterAndExpand">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="240" />
+                <ColumnDefinition Width="1" />
+            </Grid.ColumnDefinitions>
+            <Label HorizontalTextAlignment="center"
+                   FontSize="Title"
+                   TextColor="Blue"
+                   Text="Assault" />
+            <Label x:Name="AssaultCount"
+                   Grid.Column="3"
+                   FontSize="Title"
+                   Text="1000" />
+        </Grid>
+        <Grid Grid.Row="1"
+              HorizontalOptions="CenterAndExpand">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="240" />
+                <ColumnDefinition Width="1" />
+            </Grid.ColumnDefinitions>
+            <Label HorizontalTextAlignment="center"
+                   FontSize="Title"
+                   TextColor="Blue"
+                   Text="Sex Offenses" />
+            <Label x:Name="SexOffenseCount"
+                   Grid.Column="3"
+                   FontSize="Title"
+                   Text="1000" />
+        </Grid>
+        <Grid Grid.Row="2"
+              HorizontalOptions="CenterAndExpand">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="240" />
+                <ColumnDefinition Width="1" />
+            </Grid.ColumnDefinitions>
+            <Label HorizontalTextAlignment="center"
+                   FontSize="Title"
+                   TextColor="Blue"
+                   Text="Kidnapping" />
+            <Label x:Name="KidnapCount"
+                   Grid.Column="3"
+                   FontSize="Title"
+                   Text="1000" />
+        </Grid>
+        <Grid Grid.Row="3"
+              HorizontalOptions="CenterAndExpand">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="240" />
+                <ColumnDefinition Width="1" />
+            </Grid.ColumnDefinitions>
+            <Label HorizontalTextAlignment="center"
+                   FontSize="Title"
+                   TextColor="Blue"
+                   Text="Theft" />
+            <Label x:Name="TheftCount"
+                   Grid.Column="3"
+                   FontSize="Title"
+                   Text="1000" />
+        </Grid>
+        <Grid Grid.Row="4"
+              HorizontalOptions="CenterAndExpand">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="240" />
+                <ColumnDefinition Width="1" />
+            </Grid.ColumnDefinitions>
+            <Label HorizontalTextAlignment="center"
+                   FontSize="Title"
+                   TextColor="Blue"
+                   Text="Murder/Manslaughter" />
+            <Label x:Name="DeathCount"
+                   Grid.Column="3"
+                   FontSize="Title"
+                   Text="1000" />
+        </Grid>
         <StackLayout HorizontalOptions="Fill"
+                     Grid.Row="5"
                      BackgroundColor="#0095C2"
                      HeightRequest="100"
                      Orientation="Horizontal"
@@ -15,12 +87,8 @@
             <ImageButton BackgroundColor="Transparent"
                          VerticalOptions="FillAndExpand"
                          HorizontalOptions="CenterAndExpand"
-                         Source="@drawable/info"
-                         Clicked="GoToResults" />
-            <Image VerticalOptions="FillAndExpand"
-                   HorizontalOptions="CenterAndExpand"
-                   BackgroundColor="Transparent"
-                   Source="@drawable/Search" />
+                         Source="@drawable/help"
+                         Clicked="GoToHelp" />
         </StackLayout>
-    </StackLayout>
+    </Grid>
 </ContentPage>

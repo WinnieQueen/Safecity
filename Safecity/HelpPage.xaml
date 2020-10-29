@@ -5,22 +5,7 @@
     <StackLayout>
         <Label HorizontalTextAlignment="center"
                FontSize="Title"
-               VerticalOptions="CenterAndExpand"
-               Text="Hi, I'm Paul" />
-        <StackLayout HorizontalOptions="Fill"
-                     BackgroundColor="#0095C2"
-                     HeightRequest="100"
-                     Orientation="Horizontal"
-                     VerticalOptions="EndAndExpand">
-            <ImageButton BackgroundColor="Transparent"
-                         VerticalOptions="FillAndExpand"
-                         HorizontalOptions="CenterAndExpand"
-                         Source="@drawable/info"
-                         Clicked="GoToResults" />
-            <Image VerticalOptions="FillAndExpand"
-                   HorizontalOptions="CenterAndExpand"
-                   BackgroundColor="Transparent"
-                   Source="@drawable/Search" />
-        </StackLayout>
+               VerticalOptions="CenterAndExpand">Assault: All assault offenses.&#x0a;&#x0a;Sex Offenses: All sex offenses including fondling, statutory rape, rape, human trafficking and sodomy.&#x0a;&#x0a;Kidnapping: All kidnapping offenses.&#x0a;&#x0a;Theft: All personal thefts, including identity theft, theft from motor vehicles, and robbery.&#x0a;&#x0a;Murder/Manslaughter: All muder/manslaugher offenses, including negligent and nonnegligent.
+        </Label>
     </StackLayout>
 </ContentPage>
