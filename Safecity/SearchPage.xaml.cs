@@ -152,7 +152,7 @@ namespace Safecity
             button.IsEnabled = false;
             try
             {
-                int zip = Int32.Parse(Zip.Text);
+                int zip = int.Parse(Zip.Text);
                 if (zip >= 00501 && zip <= 99950)
                 {
                     int counter = 1;
@@ -170,25 +170,23 @@ namespace Safecity
                     {
                         while (counter != 0)
                         {
-                            Console.WriteLine(counter);
-                            //do do do... waiting waiting waiting.... la la la
+                            //do do do... waiting waiting waiting for the data to finish.... la la la
                         }
                         if (results == null)
                         {
-                            //ErrorMsg.IsVisible = true;
+                            ErrorMsg.IsVisible = true;
                         }
                         else
                         {
                             barProgress.Wait();
-                            loadingBar.Progress = 0;
-                            button.IsEnabled = true;
                             Device.BeginInvokeOnMainThread(() =>
                             {
+                                loadingBar.Progress = 0;
+                                button.IsEnabled = true;
                                 Application.Current.MainPage.Navigation.PushAsync(new ResultsPage());
                             });
                         }
                     });
-
                 }
             }
             catch (Exception error)
