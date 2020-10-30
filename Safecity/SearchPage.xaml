@@ -5,6 +5,9 @@
     <Grid>
         <StackLayout Grid.Row="0"
                      VerticalOptions="CenterAndExpand">
+            <ProgressBar x:Name="loadingBar"
+                         ProgressColor="#0095C2"
+                         IsVisible="true" />
             <Label>Zip</Label>
             <Entry x:Name="Zip" />
             <Label>Age</Label>
