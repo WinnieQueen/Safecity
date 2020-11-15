@@ -22,6 +22,12 @@ namespace Safecity
 {
     public partial class SearchPage : ContentPage
     {
+        private int counter = 0;
+        string[] deathcrimes = { "homicide-offenses", "murder-and-nonnegligent-manslaughter", "negligent-manslaughter" };
+        string[] assaultcrimes = { "assault-offenses", "simple-assault", "aggravated-assault" };
+        string[] sexcrimes = { "sexual-assult-with-an-object", "human-trafficking-offenses", "rape", "sodomy", "sex-offenses", "sex-offenses-non-forcible" };
+        string[] theftcrimes = { "motor-vehicle-theft", "burglary-breaking-and-entering", "pocket-picking", "purse-snatching", "robbery", "stolen-property-offenses", "theft-from-motor-vehicle", "theft-of-motor-vehicle-parts-or-accessories", "theft-from-motor-vehicle" };
+
         public SearchPage()
         {
             InitializeComponent();
@@ -74,10 +80,8 @@ namespace Safecity
                                 ORIs = new List<string>();
                                 for (int i = 2; i < strings.Length; i += 3)
                                 {
-                                    Console.Write(strings[i] + ", ");
                                     ORIs.Add(strings[i]);
                                 }
-                                Console.WriteLine();
                             }
                         }
                     }
@@ -117,13 +121,13 @@ namespace Safecity
             return new string[] { state, county, city };
         }
 
-        private Dictionary<string, string> GetData(string zip, int age, string sex, string race)
+        private Dictionary<string, int> GetData(string zip, string ageRange, string sex, string race, int yearRange)
         {
-            Dictionary<string, string> data = null;
+            Dictionary<string, int> data = null;
             //hardcoded for testing
-            //string[] info = { "utah", "emery", "huntington" };
+            string[] info = { "utah", "emery", "huntington" };
+            //string[] info = GetInfo(zip);
 
-            string[] info = GetInfo(zip);
             if (info != null)
             {
                 string state = info[0].ToLower();
@@ -132,21 +136,129 @@ namespace Safecity
                 List<string> ORIs = GetORI(state, county, city);
                 if (ORIs != null && ORIs.Count >= 1)
                 {
-                    data = new Dictionary<string, string>();
+                    data = new Dictionary<string, int>
+                    {
+                        { "Murder", 0 },
+                        { "Assault", 0 },
+                        { "Sex Crimes", 0 },
+                        { "Theft Crimes", 0 }
+                    };
+                    foreach (string crime in deathcrimes)
+                    {
+                        int amount = 0;
+                        foreach (string ORI in ORIs)
+                        {
+                            ThreadPool.QueueUserWorkItem(o =>
+                            {
+                                Interlocked.Increment(ref counter);
+                                int result = GetCrimeData(ORI, crime, "count", yearRange);
+                                Interlocked.Add(ref amount, result);
+                                Console.WriteLine(amount);
+                                Interlocked.Decrement(ref counter);
+                            });
+                        }
+                        while (counter != 1)
+                        {
+                            //do do do doooo :)
+                        }
+                        data["Murder"] += amount;
+                    }
+                    foreach (string crime in assaultcrimes)
+                    {
+                        int amount = 0;
+                        foreach (string ORI in ORIs)
+                        {
+                            ThreadPool.QueueUserWorkItem(o =>
+                            {
+                                Interlocked.Increment(ref counter);
+                                int result = GetCrimeData(ORI, crime, "count", yearRange);
+                                Interlocked.Add(ref amount, result);
+                                Console.WriteLine(amount);
+                                Interlocked.Decrement(ref counter);
+                            });
+                        }
+                        while (counter != 1)
+                        {
+                            //do do do doooo :)
+                        }
+                        data["Assault"] += amount;
+                    }
+                    foreach (string crime in sexcrimes)
+                    {
+                        int amount = 0;
+                        foreach (string ORI in ORIs)
+                        {
+                            ThreadPool.QueueUserWorkItem(o =>
+                            {
+                                Interlocked.Increment(ref counter);
+                                int result = GetCrimeData(ORI, crime, "count", yearRange);
+                                Interlocked.Add(ref amount, result);
+                                Console.WriteLine(amount);
+                                Interlocked.Decrement(ref counter);
+                                Console.WriteLine(counter);
+                            });
+                        }
+                        while (counter != 1)
+                        {
+                            //do do do doooo :)
+                        }
+                        data["Sex Crimes"] += amount;
+                    }
+                    foreach (string crime in theftcrimes)
+                    {
+                        int amount = 0;
+                        foreach (string ORI in ORIs)
+                        {
+                            ThreadPool.QueueUserWorkItem(o =>
+                            {
+                                Interlocked.Increment(ref counter);
+                                int result = GetCrimeData(ORI, crime, "count", yearRange);
+                                Interlocked.Add(ref amount, result);
+                                Console.WriteLine(amount);
+                                Interlocked.Decrement(ref counter);
+                                Console.WriteLine(counter);
+                            });
+                        }
+                        while (counter != 1)
+                        {
+                            //do do do doooo :)
+                        }
+                        data["Theft Crimes"] += amount;
+                    }
                 }
             }
             return data;
         }
 
-        private void StartBar()
+        private int GetCrimeData(string ORI, string crime, string variable, int yearRange)
         {
-            loadingBar.Progress = 0;
-            loadingBar.ProgressTo(1, 6000, Easing.Linear);
+            int count = 0;
+            String link = $"https://api.usa.gov/crime/fbi/sapi/api/data/nibrs/{crime}/victim/agencies/{ORI}/{variable}?API_KEY=8i5xgcWXlaTKrcDHIo5mx9l4WfJnEPThPv4dkNmy";
+            RestClient client = new RestClient(link);
+            RestRequest request = new RestRequest(Method.GET);
+
+            IRestResponse response = client.Execute(request);
+            JObject jObject = JObject.Parse(response.Content);
+            JToken[] pieces = jObject.GetValue("results").ToArray();
+            foreach (JToken piece in pieces)
+            {
+                JObject obj = JObject.Parse(piece.ToString());
+                if (int.Parse(obj.GetValue("data_year").ToString()) >= (DateTime.Now.Year - yearRange))
+                {
+                    count += int.Parse(obj.GetValue(variable).ToString());
+                }
+            }
+            return count;
         }
 
         private void Submit_Clicked(object sender, EventArgs e)
         {
-            Dictionary<string, string> results = null;
+            //GetData("84528", 20, "female", "white", 5);
+
+
+
+
+            Dictionary<string, int> results = null;
             loadingBar.Progress = 0;
             Button button = sender as Button;
             button.IsEnabled = false;
@@ -155,38 +267,53 @@ namespace Safecity
                 int zip = int.Parse(Zip.Text);
                 if (zip >= 00501 && zip <= 99950)
                 {
-                    int counter = 1;
-                    int age = Age.Text == null ? 0 : Int32.Parse(Age.Text);
-                    string sex = SexPicker.SelectedItem != null ? SexPicker.SelectedItem.ToString() : "";
-                    string race = RacePicker.SelectedItem != null ? RacePicker.SelectedItem.ToString() : "";
-                    Task<bool> barProgress = loadingBar.ProgressTo(1, 7000, Easing.Linear);
-                    ThreadPool.QueueUserWorkItem(o =>
+                    int age = Age.Text == null ? -1 : Int32.Parse(Age.Text);
+                    string ageRange = null;
+                    if (age >= 0 && age <= 9)
                     {
-                        results = GetData(Zip.Text, age, sex, race);
-                        counter = Interlocked.Decrement(ref counter);
-                    });
-
-                    barProgress.ContinueWith(o =>
+                        ageRange = "range_0_9";
+                    }
+                    else if (age >= 10 && age <= 99)
                     {
-                        while (counter != 0)
+                        char firstNum = Age.Text[0];
+                        ageRange = $"range_{firstNum}0_{firstNum}9";
+                    }
+                    if (ageRange != null)
+                    {
+                        int yearRange = Year.Text == null ? 100 : Int32.Parse(Year.Text);
+                        string sex = SexPicker.SelectedItem != null ? SexPicker.SelectedItem.ToString() : "";
+                        string race = RacePicker.SelectedItem != null ? RacePicker.SelectedItem.ToString() : "";
+                        Task<bool> barProgress = loadingBar.ProgressTo(1, 10000, Easing.Linear);
+                        ThreadPool.QueueUserWorkItem(o =>
                         {
-                            //do do do... waiting waiting waiting for the data to finish.... la la la
-                        }
-                        if (results == null)
+                            Interlocked.Increment(ref counter);
+                            results = GetData(Zip.Text, ageRange, sex, race, yearRange);
+                            counter = Interlocked.Decrement(ref counter);
+                            Console.WriteLine("COUNT COUNT COUNT COUNT " + counter);
+                        });
+                        barProgress.ContinueWith(o =>
                         {
-                            ErrorMsg.IsVisible = true;
-                        }
-                        else
-                        {
-                            barProgress.Wait();
-                            Device.BeginInvokeOnMainThread(() =>
+                            while (counter != 0)
                             {
-                                loadingBar.Progress = 0;
-                                button.IsEnabled = true;
-                                Application.Current.MainPage.Navigation.PushAsync(new ResultsPage());
-                            });
-                        }
-                    });
+                                //do do do... waiting waiting waiting for the data to finish.... la la la
+                            }
+                            if (results == null)
+                            {
+                                ErrorMsg.IsVisible = true;
+                            }
+                            else
+                            {
+                                barProgress.Wait();
+                                Device.BeginInvokeOnMainThread(() =>
+                                {
+                                    loadingBar.Progress = 0;
+                                    button.IsEnabled = true;
+                                    Console.WriteLine("COUNT COUNT COUNT COUNT " + results.Count);
+                                    Application.Current.MainPage.Navigation.PushAsync(new ResultsPage(results));
+                                });
+                            }
+                        });
+                    }
                 }
             }
             catch (Exception error)
@@ -198,16 +325,4 @@ namespace Safecity
             button.IsEnabled = true;
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
 }

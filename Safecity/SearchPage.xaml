@@ -7,9 +7,12 @@
                      VerticalOptions="CenterAndExpand">
             <ProgressBar x:Name="loadingBar"
                          ProgressColor="#0095C2"/>
-            <Label>Zip</Label>
+            <Label>Zip Code</Label>
             <Entry x:Name="Zip" />
-            <Label>Age</Label>
+            <Label>Year Range (How many years back you would like the search to go)</Label>
+            <Entry x:Name="Year"
+                   Keyboard="Numeric" />
+            <Label>Age (may not be under 0 or over 99)</Label>
             <Entry x:Name="Age"
                    Keyboard="Numeric" />
             <Label>Sex</Label>
@@ -34,7 +37,8 @@
                     Clicked="Submit_Clicked" />
             <Label x:Name="ErrorMsg"
                    TextColor="Red"
-                   IsVisible="false">Please ensure the Zip code is valid.</Label>
+                   IsVisible="false">Please ensure all data is valid.
+                    If you're sure all is valid and you're still receiving this error, your area may not be supported.</Label>
         </StackLayout>
 
 
