@@ -5,8 +5,10 @@
     <Grid>
         <StackLayout Grid.Row="0"
                      VerticalOptions="CenterAndExpand">
+            <ActivityIndicator x:Name="Indicator" Color="#0095C2"
+                               IsRunning="False" />
             <ProgressBar x:Name="loadingBar"
-                         ProgressColor="#0095C2"/>
+                         ProgressColor="#0095C2" />
             <Label>Zip Code</Label>
             <Entry x:Name="Zip" />
             <Label>Year Range (How many years back you would like the search to go)</Label>
@@ -27,9 +29,9 @@
             <Picker x:Name="RacePicker">
                 <Picker.Items>
                     <x:String>Asian</x:String>
-                    <x:String>Native_Hawaiian</x:String>
-                    <x:String>Black</x:String>
-                    <x:String>American_Indian</x:String>
+                    <x:String>Native Hawaiian</x:String>
+                    <x:String>Black or African American</x:String>
+                    <x:String>American Indian or Alaska Native</x:String>
                     <x:String>White</x:String>
                 </Picker.Items>
             </Picker>
@@ -37,8 +39,7 @@
                     Clicked="Submit_Clicked" />
             <Label x:Name="ErrorMsg"
                    TextColor="Red"
-                   IsVisible="false">Please ensure all data is valid.
-                    If you're sure all is valid and you're still receiving this error, your area may not be supported.</Label>
+                   IsVisible="false">Please ensure all data is valid. If you're sure all is valid and you're still receiving this error, your zip code may not be supported.</Label>
         </StackLayout>
 
 

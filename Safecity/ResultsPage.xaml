@@ -3,16 +3,52 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:oxy="clr-namespace:OxyPlot.Xamarin.Forms;assembly=OxyPlot.Xamarin.Forms"
              x:Class="Safecity.ResultsPage">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="1" />
-            <RowDefinition Height="200" />
-        </Grid.RowDefinitions>
-        <Label Text="Crime"
-               Grid.Row="0" />
-        <oxy:PlotView Model="{Binding MyModel}" 
-                      HeightRequest="250"
-                      WidthRequest="250"
-                      Grid.Row="1"/>
-    </Grid>
+    <ScrollView>
+        <ScrollView.Content>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1" />
+                    <RowDefinition Height="200" />
+                </Grid.RowDefinitions>
+                <Label Text="Your Risks"
+                       Grid.Row="0" />
+                <oxy:PlotView Model="{Binding PersonalGraph}"
+                              HeightRequest="250"
+                              WidthRequest="250"
+                              Grid.Row="1"
+                              Grid.Column="0"
+                              Grid.ColumnSpan="3" />
+                <oxy:PlotView Model="{Binding PropertyAgeGraph}"
+                              HeightRequest="5"
+                              WidthRequest="5"
+                              Grid.Row="3"
+                              Grid.ColumnSpan="3" />
+                <oxy:PlotView Model="{Binding PropertySexGraph}"
+                              HeightRequest="250"
+                              WidthRequest="250"
+                              Grid.Row="4"
+                              Grid.ColumnSpan="3" />
+                <oxy:PlotView Model="{Binding PropertyRaceGraph}"
+                              HeightRequest="250"
+                              WidthRequest="250"
+                              Grid.Row="5"
+                              Grid.ColumnSpan="3" />
+                <oxy:PlotView Model="{Binding ViolentAgeGraph}"
+                              HeightRequest="250"
+                              WidthRequest="250"
+                              Grid.Row="7"
+                              Grid.ColumnSpan="3" />
+                <oxy:PlotView Model="{Binding ViolentSexGraph}"
+                              HeightRequest="250"
+                              WidthRequest="250"
+                              Grid.Row="8"
+                              Grid.ColumnSpan="3" />
+                <oxy:PlotView Model="{Binding ViolentRaceGraph}"
+                              HeightRequest="250"
+                              WidthRequest="250"
+                              Grid.Row="9"
+                              Grid.ColumnSpan="3" />
+            </Grid>
+        </ScrollView.Content>
+    </ScrollView>
 </ContentPage>
