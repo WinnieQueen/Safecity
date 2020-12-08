@@ -12,6 +12,8 @@ using AngleSharp.Html.Dom;
 using AngleSharp.Dom;
 using System.Threading;
 using System.Collections.Concurrent;
+using System.Diagnostics;
+using Xamarin.Essentials;
 
 namespace Safecity
 {
@@ -20,6 +22,7 @@ namespace Safecity
         private int counter = 0;
         private List<Task> tasks = new List<Task>();
         ConcurrentBag<string> crimes = new ConcurrentBag<string> { "violent-crime", "property-crime", "aggravated-assault", "burglary", "larceny", "motor-vehicle-theft", "homicide", "rape", "robbery", "arson" };
+        volatile bool hitYear = false;
         public SearchPage()
         {
             InitializeComponent();
@@ -82,104 +85,100 @@ namespace Safecity
             return ORIs;
         }
 
-        private string[] GetLocationInfo(string zip)
+        private string GetCounty(string city, ref string state)
         {
-            //getting the city from APIs
-            string url = $"https://redline-redline-zipcode.p.rapidapi.com/rest/info.json/{zip}/degrees";
-            RestClient client = new RestClient(url);
-            RestRequest request = new RestRequest(Method.GET);
-            request.AddHeader("x-rapidapi-host", "redline-redline-zipcode.p.rapidapi.com");
-            request.AddHeader("x-rapidapi-key", "ebacc40a32mshdcb364465409375p1f8018jsncc41302b2150");
-            request.AddHeader("useQueryString", "true");
-
-            IRestResponse response = client.Execute(request);
-            var jObject = JObject.Parse(response.Content);
-            string city = jObject.GetValue("city").ToString();
+            string county = null;
             city = city.ToLower();
-
-            //getting the state/county from database
-            string allInfo = Properties.Resources.uszips;
-            string pattern = $"(\"{zip}\".*{city}.*{{)";
-            Regex r = new Regex(pattern);
-            string infoString = r.Match(allInfo.ToLower()).Value;
-            string[] cityInfo = infoString.Split(',');
-            string county = cityInfo[cityInfo.Length - 2];
-            county = county.Replace("\"", "");
-            county = county.ToLower();
-            string state = cityInfo[cityInfo.Length - 8];
-            state = state.Replace("\"", "");
             state = state.ToLower();
 
-            return new string[] { state, county };
+            //getting the county from database
+            string allInfo = Properties.Resources.uszips;
+            string pattern = $"(\"{city}\".*{state}.*{{)";
+            Regex r = new Regex(pattern);
+            string infoString = r.Match(allInfo.ToLower()).Value;
+            Console.WriteLine("STRING STRING STRING: " + infoString);
+            if (!infoString.Equals(""))
+            {
+                string[] cityInfo = infoString.Split(',');
+                if (cityInfo.Length > 0)
+                {
+                    if (state.Length == 2)
+                    {
+                        state = cityInfo[2];
+                        state = state.Replace("\"", "");
+                    }
+                    county = cityInfo[cityInfo.Length - 2];
+                    county = county.Replace("\"", "");
+                    county = county.ToLower();
+                }
+            }
+            return county;
         }
 
-        private ConcurrentDictionary<string, int> GetData(string zip, string ageRange, string sex, string race, int yearRange)
+        private ConcurrentDictionary<string, int> GetData(string city, string state, string ageRange, string sex, string race, int yearRange)
         {
             ConcurrentDictionary<string, int> data = null;
             //hardcoded for testing
             //string[] info = { "utah", "box elder", "perry" };
-            string[] info = GetLocationInfo(zip);
-
-            if (info != null)
+            city = city.ToLower();
+            state = state.ToLower();
+            string county = GetCounty(city, ref state);
+            hitYear = false;
+            if (county != null)
             {
-                string state = info[0].ToLower();
-                string county = info[1].ToLower();
                 List<string> ORIs = GetORI(state, county);
                 if (ORIs != null && ORIs.Count >= 1)
                 {
                     data = new ConcurrentDictionary<string, int>();
                     foreach (string crime in crimes)
                     {
-                        int ageSpecific = 0;
-                        int sexSpecific = 0;
-                        int raceSpecific = 0;
-                        int total = 0;
-                        data.TryAdd(crime, total);
-                        data.TryAdd(crime + "_age", ageSpecific);
-                        data.TryAdd(crime + "_sex", sexSpecific);
-                        data.TryAdd(crime + "_race", raceSpecific);
+                        data.TryAdd(crime, 0);
+                        data.TryAdd(crime + "_sex", 0);
+                        data.TryAdd(crime + "_age", 0);
+                        data.TryAdd(crime + "_race", 0);
                         foreach (string ORI in ORIs)
                         {
-                            Task task = Task.Run(() =>
+                            if (ageRange != null)
+                            {
+                                tasks.Add(Task.Run(() =>
+                                {
+                                    int ageResult = GetCrimeData(ORI, crime, "age", ageRange, yearRange);
+                                    data[crime + "_age"] += ageResult;
+                                }));
+                            }
+                            if (!sex.Equals(""))
+                            {
+                                tasks.Add(Task.Run(() =>
+                                {
+                                    int sexResult = GetCrimeData(ORI, crime, "sex", sex, yearRange);
+                                    data[crime + "_sex"] += sexResult;
+                                }));
+                            }
+                            if (!race.Equals(""))
+                            {
+                                tasks.Add(Task.Run(() =>
+                                {
+                                    int raceResult = GetCrimeData(ORI, crime, "race", race, yearRange);
+                                    data[crime + "_race"] += raceResult;
+                                }));
+                            }
+                            tasks.Add(Task.Run(() =>
                             {
                                 int result = GetCrimeData(ORI, crime, "count", "Count", yearRange);
-                                if (result == -1)
-                                {
-                                    ORIs.Remove(ORI);
-                                }
-                                else
-                                {
-                                    Interlocked.Add(ref total, result);
-                                    int ageResult = GetCrimeData(ORI, crime, "age", ageRange, yearRange);
-                                    Interlocked.Add(ref ageSpecific, ageResult);
-                                    int sexResult = GetCrimeData(ORI, crime, "sex", sex, yearRange);
-                                    Interlocked.Add(ref sexSpecific, sexResult);
-                                    int raceResult = GetCrimeData(ORI, crime, "race", race, yearRange);
-                                    Interlocked.Add(ref raceSpecific, raceResult);
-                                    data[crime] += total;
-                                    data[crime + "_age"] += ageSpecific;
-                                    data[crime + "_sex"] += sexSpecific;
-                                    data[crime + "_race"] += raceSpecific;
-                                }
-                            });
-                            tasks.Add(task);
+                                data[crime] += result;
+                            }));
                         }
                     }
                 }
             }
-            while (tasks.Count != 0)
-            {
-                Task completedTask = Task.WhenAny(tasks).Result;
-                tasks.Remove(completedTask);
-                completedTask.Dispose();
-            }
             Task.WaitAll(tasks.ToArray());
-            return data;
+
+            return hitYear ? data : null;
         }
 
         private int GetCrimeData(string ORI, string crime, string variable, string userInfo, int yearRange)
         {
-            int count = -1;
+            int count = 0;
             String link = $"https://api.usa.gov/crime/fbi/sapi/api/nibrs/{crime}/victim/agencies/{ORI}/{variable}?API_KEY=8i5xgcWXlaTKrcDHIo5mx9l4WfJnEPThPv4dkNmy";
             RestClient client = new RestClient(link);
             RestRequest request = new RestRequest(Method.GET);
@@ -196,14 +195,14 @@ namespace Safecity
                         if (result != null)
                         {
                             JToken[] pieces = result.ToArray();
-                            if (pieces.Length != 0)
+                            if (pieces.Length > 0)
                             {
-                                count = 0;
                                 foreach (JToken piece in pieces)
                                 {
                                     JObject obj = JObject.Parse(piece.ToString());
                                     if (int.Parse(obj.GetValue("data_year").ToString()) >= (DateTime.Now.Year - yearRange))
                                     {
+                                        hitYear = true;
                                         if (obj.GetValue("key").ToString().Equals(userInfo))
                                         {
                                             count += int.Parse(obj.GetValue("value").ToString());
@@ -220,37 +219,44 @@ namespace Safecity
 
         private void Submit_Clicked(object sender, EventArgs e)
         {
-            Indicator.IsRunning = true;
-            ConcurrentDictionary<string, int> results = null;
-            loadingBar.Progress = 0;
-            Button button = sender as Button;
-            button.IsEnabled = false;
-            try
+            var current = Connectivity.NetworkAccess;
+
+            if (current == NetworkAccess.Internet)
             {
-                int zip = int.Parse(Zip.Text);
-                if (zip >= 00501 && zip <= 99950)
+                try
                 {
                     int age = Age.Text == null ? -1 : Int32.Parse(Age.Text);
+                    string sex = SexPicker.SelectedItem != null ? SexPicker.SelectedItem.ToString() : "";
+                    string race = RacePicker.SelectedItem != null ? RacePicker.SelectedItem.ToString() : "";
                     string ageRange = null;
                     if (age >= 0 && age <= 9)
                     {
-                        ageRange = "range_0_9";
+                        ageRange = "0-9";
                     }
                     else if (age >= 10 && age <= 99)
                     {
                         char firstNum = Age.Text[0];
-                        ageRange = $"range_{firstNum}0_{firstNum}9";
+                        ageRange = $"{firstNum}0-{firstNum}9";
                     }
-                    if (ageRange != null)
+                    if (ageRange != null || !String.IsNullOrEmpty(sex) || !String.IsNullOrEmpty(race))
                     {
+                        Stopwatch stopwatch = new Stopwatch();
+                        stopwatch.Start();
+                        loadingBar.Progress = 0;
+                        Task<bool> barProgress = loadingBar.ProgressTo(1, 25000, Easing.Linear);
+                        Indicator.IsRunning = true;
+                        ConcurrentDictionary<string, int> results = null;
+                        Button button = sender as Button;
+                        ErrorMsg.IsVisible = false;
+                        button.IsEnabled = false;
+                        string city = City.Text;
+                        string state = State.Text;
                         int yearRange = Year.Text == null ? 100 : Int32.Parse(Year.Text);
-                        string sex = SexPicker.SelectedItem != null ? SexPicker.SelectedItem.ToString() : "";
-                        string race = RacePicker.SelectedItem != null ? RacePicker.SelectedItem.ToString() : "";
-                        Task<bool> barProgress = loadingBar.ProgressTo(.8, 20000, Easing.Linear);
+
                         ThreadPool.QueueUserWorkItem(o =>
                         {
                             Interlocked.Increment(ref counter);
-                            results = GetData(Zip.Text, ageRange, sex, race, yearRange);
+                            results = GetData(city, state, ageRange, sex, race, yearRange);
                             Interlocked.Decrement(ref counter);
                         });
                         barProgress.ContinueWith(o =>
@@ -260,13 +266,20 @@ namespace Safecity
 
                             }
 
+                            foreach (Task task in tasks.ToArray())
+                            {
+                                tasks.Remove(task);
+                                task.Dispose();
+                            }
+
                             if (results == null)
                             {
-                                Console.WriteLine("OH NO OH NO OH NO");
                                 ErrorMsg.IsVisible = true;
+                                ErrorMsg.Text = "No results. Please ensure everything is spelled correctly and try expanding your search year range. Otherwise, your area may not be supported.";
                                 button.IsEnabled = true;
                                 foreach (Task task in tasks)
                                 {
+                                    tasks.Remove(task);
                                     task.Dispose();
                                 }
                                 Indicator.IsRunning = false;
@@ -284,24 +297,39 @@ namespace Safecity
                                         task.Dispose();
                                     }
                                     Indicator.IsRunning = false;
-                                    Application.Current.MainPage.Navigation.PushAsync(new ResultsPage(results));
+                                    stopwatch.Stop();
+                                    Console.WriteLine("TOOK TOOK TOOK TOOK: " + stopwatch.ElapsedMilliseconds);
+                                    Application.Current.MainPage.Navigation.PushAsync(new ResultsPage(results, !String.IsNullOrEmpty(sex), !String.IsNullOrEmpty(race), age != -1));
                                 });
                             }
                         });
                     }
+                    else
+                    {
+                        ErrorMsg.IsVisible = true;
+                        ErrorMsg.Text = "Please fill out at least one demographic";
+                    }
+                }
+                catch (Exception error)
+                {
+                    Console.WriteLine(error.StackTrace);
+                    Device.BeginInvokeOnMainThread(() =>
+                    {
+                        ErrorMsg.IsVisible = true;
+                        ErrorMsg.Text = "An error occurred. Please ensure everything is filled correctly.";
+                        loadingBar.Progress = 0;
+                        Indicator.IsRunning = false;
+                        foreach (Task task in tasks)
+                        {
+                            tasks.Remove(task);
+                            task.Dispose();
+                        }
+                    });
                 }
             }
-            catch (Exception error)
+            else
             {
-                Console.WriteLine(error.Message);
-                Console.WriteLine(error.ToString());
-                ErrorMsg.IsVisible = true;
-                button.IsEnabled = true;
-                foreach (Task task in tasks)
-                {
-                    task.Dispose();
-                }
-                Indicator.IsRunning = false;
+                DisplayAlert("No Internet", "You must be connected to the internet in order to do searches!", "OK");
             }
         }
     }

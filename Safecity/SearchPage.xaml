@@ -2,63 +2,76 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Safecity.SearchPage">
+
     <Grid>
-        <StackLayout Grid.Row="0"
-                     VerticalOptions="CenterAndExpand">
-            <ActivityIndicator x:Name="Indicator" Color="#0095C2"
-                               IsRunning="False" />
-            <ProgressBar x:Name="loadingBar"
-                         ProgressColor="#0095C2" />
-            <Label>Zip Code</Label>
-            <Entry x:Name="Zip" />
-            <Label>Year Range (How many years back you would like the search to go)</Label>
-            <Entry x:Name="Year"
-                   Keyboard="Numeric" />
-            <Label>Age (may not be under 0 or over 99)</Label>
-            <Entry x:Name="Age"
-                   Keyboard="Numeric" />
-            <Label>Sex</Label>
-            <Picker x:Name="SexPicker"
-                    SelectedIndex="0">
-                <Picker.Items>
-                    <x:String>Male</x:String>
-                    <x:String>Female</x:String>
-                </Picker.Items>
-            </Picker>
-            <Label>Race</Label>
-            <Picker x:Name="RacePicker">
-                <Picker.Items>
-                    <x:String>Asian</x:String>
-                    <x:String>Native Hawaiian</x:String>
-                    <x:String>Black or African American</x:String>
-                    <x:String>American Indian or Alaska Native</x:String>
-                    <x:String>White</x:String>
-                </Picker.Items>
-            </Picker>
-            <Button Text="Submit"
-                    Clicked="Submit_Clicked" />
-            <Label x:Name="ErrorMsg"
-                   TextColor="Red"
-                   IsVisible="false">Please ensure all data is valid. If you're sure all is valid and you're still receiving this error, your zip code may not be supported.</Label>
-        </StackLayout>
+        <ScrollView>
+            <ScrollView.Content>
+                <StackLayout>
+                    <ActivityIndicator x:Name="Indicator"
+                                       Color="#0095C2"
+                                       IsRunning="False" />
+                    <ProgressBar x:Name="loadingBar"
+                                 ProgressColor="#0095C2" />
+                    <Label TextColor="Red"
+                           IsVisible="true">Required Inputs</Label>
+                    <Label>City (Case Insensitive)</Label>
+                    <Entry x:Name="City" />
+                    <Label>State (Full Name OR Abbreviation, Case Insensitive)</Label>
+                    <Entry x:Name="State" />
+                    <Label>Year Range (How many years back you would like the search to go)</Label>
+                    <Entry x:Name="Year"
+                           Keyboard="Numeric" />
+                    <Label TextColor="Red"
+                           IsVisible="true">Demographics (Must answer at least one)</Label>
+                    <Label>Age (may not be under 0 or over 99)</Label>
+                    <Entry x:Name="Age"
+                           Keyboard="Numeric" />
+                    <Label>Sex</Label>
+                    <Picker x:Name="SexPicker"
+                            SelectedIndex="0">
+                        <Picker.Items>
+                            <x:String>Male</x:String>
+                            <x:String>Female</x:String>
+                        </Picker.Items>
+                    </Picker>
+                    <Label>Race</Label>
+                    <Picker x:Name="RacePicker">
+                        <Picker.Items>
+                            <x:String>Asian</x:String>
+                            <x:String>Native Hawaiian</x:String>
+                            <x:String>Black or African American</x:String>
+                            <x:String>American Indian or Alaska Native</x:String>
+                            <x:String>White</x:String>
+                        </Picker.Items>
+                    </Picker>
+                    <Button Text="Submit"
+                            Clicked="Submit_Clicked" />
+                    <Label x:Name="ErrorMsg"
+                           TextColor="Red"
+                           IsVisible="true"></Label>
+                    <Label />
+                    <Label />
+                </StackLayout>
+            </ScrollView.Content>
+        </ScrollView>
 
 
         <StackLayout HorizontalOptions="Fill"
-                     BackgroundColor="#0095C2"
-                     HeightRequest="50"
-                     Orientation="Horizontal"
-                     VerticalOptions="End">
-            <ImageButton BackgroundColor="Transparent"
-                         HorizontalOptions="CenterAndExpand"
-                         Source="@drawable/info"
-                         Clicked="GoToInfo" />
-            <ImageButton BackgroundColor="Transparent"
-                         HorizontalOptions="CenterAndExpand"
-                         Source="@drawable/help"
-                         Clicked="GoToHelp" />
-            <Image HorizontalOptions="CenterAndExpand"
-                   BackgroundColor="Transparent"
-                   Source="@drawable/Search" />
+                 BackgroundColor="#0095C2"
+                 HeightRequest="50"
+                 Orientation="Horizontal"
+                 VerticalOptions="End">
+        <ImageButton BackgroundColor="Transparent"
+                     HorizontalOptions="CenterAndExpand"
+                     Source="@drawable/info"
+                     Clicked="GoToInfo" />
+        <ImageButton BackgroundColor="Transparent"
+                     HorizontalOptions="CenterAndExpand"
+                     Source="@drawable/help"
+                     Clicked="GoToHelp" />
+        <Image HorizontalOptions="CenterAndExpand"
+               BackgroundColor="Transparent"
+               Source="@drawable/Search" />
         </StackLayout>
     </Grid>
 </ContentPage>

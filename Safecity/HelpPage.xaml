@@ -2,10 +2,35 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Safecity.HelpPage">
-    <StackLayout>
-        <Label HorizontalTextAlignment="center"
-               FontSize="Title"
-               VerticalOptions="CenterAndExpand">Assault: All assault offenses.&#x0a;&#x0a;Sex Offenses: All sex offenses including fondling, statutory rape, rape, human trafficking and sodomy.&#x0a;&#x0a;Kidnapping: All kidnapping offenses.&#x0a;&#x0a;Theft: All personal thefts, including identity theft, theft from motor vehicles, and robbery.&#x0a;&#x0a;Murder/Manslaughter: All muder/manslaugher offenses, including negligent and nonnegligent.
-        </Label>
-    </StackLayout>
+    <ScrollView>
+        <ScrollView.Content>
+            <StackLayout>
+                <Label  FontSize="Default"
+                       VerticalOptions="CenterAndExpand"
+                        Padding="1">
+            The data shown is data collected from an entire county where the town entered resides in.
+            If the requested year is very large, the user may not get the best results; many police stations only go back to a certain number of years, while others go back further, so there may be inconsistencies in the gathered information.
+                    
+            Data collected by 'age' is collected using an age range calculated from the entered user age, starting from 0-9; for example, if '13' is entered, the range for the data is 10-19.
+            
+            Specific Risks:
+            These charts show the comparison between specific risks solely for the user's demographics. These charts do not include any data outside of the user's demographic.
+                    
+            Violent Crimes By [Demographic]:
+            These charts show the danger for violent crimes for other demographics vs the user's demographics. Violent crimes include: aggravated assault, homicide, and rape.
+                    
+            Property Crimes By [Demographic]:
+            These charts show the danger for property crimes for other demographics vs the user's demographics. Property crimes include: burglary, larceny, motor-vehicle theft, robbery, and arson.
+                    
+            If you are experiencing issues with the search for unknown reasons, these are common possibilities:
+                    1. Your specific city could not be found inside of the database to get the county.
+                    2. The county found does not have any supported police stations.
+                    3. Either the city or state are spelled incorrectly. These are NOT case sensitive.
+                    4. The county is very large and you are requesting all 3 demographics worth of data; calculating can take a very long time.
+            
+            The city's county is found using a database found here: https://simplemaps.com/data/us-zips.
+                </Label>
+            </StackLayout>
+        </ScrollView.Content>
+    </ScrollView>
 </ContentPage>

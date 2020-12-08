@@ -3,52 +3,82 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:oxy="clr-namespace:OxyPlot.Xamarin.Forms;assembly=OxyPlot.Xamarin.Forms"
              x:Class="Safecity.ResultsPage">
-    <ScrollView>
-        <ScrollView.Content>
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="1" />
-                    <RowDefinition Height="200" />
-                </Grid.RowDefinitions>
-                <Label Text="Your Risks"
-                       Grid.Row="0" />
-                <oxy:PlotView Model="{Binding PersonalGraph}"
-                              HeightRequest="250"
-                              WidthRequest="250"
-                              Grid.Row="1"
-                              Grid.Column="0"
+    <Grid>
+        <ScrollView Grid.ColumnSpan="3">
+            <ScrollView.Content>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+                    <oxy:PlotView Model="{Binding PersonalAgeGraph}"
+                                  x:Name="personalAgeGraph"
+                                  Grid.Row="0"
+                                  HeightRequest="250"
                               Grid.ColumnSpan="3" />
-                <oxy:PlotView Model="{Binding PropertyAgeGraph}"
-                              HeightRequest="5"
-                              WidthRequest="5"
-                              Grid.Row="3"
+                    <oxy:PlotView Model="{Binding PersonalSexGraph}"
+                                  x:Name="personalSexGraph"
+                                  Grid.Row="1"
+                                  HeightRequest="250"
                               Grid.ColumnSpan="3" />
-                <oxy:PlotView Model="{Binding PropertySexGraph}"
-                              HeightRequest="250"
-                              WidthRequest="250"
-                              Grid.Row="4"
-                              Grid.ColumnSpan="3" />
-                <oxy:PlotView Model="{Binding PropertyRaceGraph}"
-                              HeightRequest="250"
-                              WidthRequest="250"
-                              Grid.Row="5"
-                              Grid.ColumnSpan="3" />
-                <oxy:PlotView Model="{Binding ViolentAgeGraph}"
-                              HeightRequest="250"
-                              WidthRequest="250"
-                              Grid.Row="7"
-                              Grid.ColumnSpan="3" />
-                <oxy:PlotView Model="{Binding ViolentSexGraph}"
-                              HeightRequest="250"
-                              WidthRequest="250"
-                              Grid.Row="8"
-                              Grid.ColumnSpan="3" />
-                <oxy:PlotView Model="{Binding ViolentRaceGraph}"
-                              HeightRequest="250"
-                              WidthRequest="250"
-                              Grid.Row="9"
-                              Grid.ColumnSpan="3" />
-            </Grid>
-        </ScrollView.Content>
-    </ScrollView>
+                    <oxy:PlotView Model="{Binding PersonalRaceGraph}"
+                                  x:Name="personalRaceGraph"
+                                  Grid.Row="2"
+                                  HeightRequest="250"
+                                  Grid.ColumnSpan="3" />
+                    <oxy:PlotView Model="{Binding PropertyAgeGraph}"
+                                  x:Name="propertyAgeGraph"
+                                  Grid.Row="3"
+                                  HeightRequest="250"
+                                  Grid.ColumnSpan="3" />
+                    <oxy:PlotView Model="{Binding PropertySexGraph}"
+                                  x:Name="propertySexGraph"
+                                  Grid.Row="4"
+                                  HeightRequest="250"
+                                  Grid.ColumnSpan="3" />
+                    <oxy:PlotView Model="{Binding PropertyRaceGraph}"
+                                  x:Name="propertyRaceGraph"
+                                  HeightRequest="250"
+                                  Grid.Row="5"
+                                  Grid.ColumnSpan="3" />
+                    <oxy:PlotView Model="{Binding ViolentAgeGraph}"
+                                  x:Name="violentAgeGraph"
+                                  Grid.Row="6"
+                                  HeightRequest="250"
+                                  Grid.ColumnSpan="3" />
+                    <oxy:PlotView Model="{Binding ViolentSexGraph}"
+                                  x:Name="violentSexGraph"
+                                  HeightRequest="250"
+                                  Grid.Row="7"
+                                  Grid.ColumnSpan="3" />
+                    <oxy:PlotView Model="{Binding ViolentRaceGraph}"
+                                  x:Name="violentRaceGraph"
+                                  HeightRequest="250"
+                                  Grid.Row="8"
+                                  Grid.ColumnSpan="3" />
+                    <Label Grid.Row="9" />
+                </Grid>
+            </ScrollView.Content>
+        </ScrollView>
+
+
+
+        <StackLayout HorizontalOptions="Fill"
+            Grid.ColumnSpan="3"
+            BackgroundColor="#0095C2"
+            HeightRequest="50"
+            Orientation="Horizontal"
+                     VerticalOptions="End">
+            <ImageButton BackgroundColor="Transparent"
+                                 HorizontalOptions="CenterAndExpand"
+                                 Source="@drawable/help"
+                                 Clicked="GoToHelp" />
+        </StackLayout>
+     </Grid>
 </ContentPage>
